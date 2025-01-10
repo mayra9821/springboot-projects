@@ -1,6 +1,7 @@
 package com.mayto.dbwithjpahibernate.domain;
 
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,14 +9,20 @@ import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Entity
+@Table(name = "books")
 public class Book {
+
+    @Id
     private String isbn;
+
     private String title;
-    private Long authorId;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id")
+    private Author author;
 
     public String getIsbn() {
         return isbn;
@@ -33,18 +40,18 @@ public class Book {
         this.title = title;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Author getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public static class Builder {
         private String isbn;
         private String title;
-        private Long authorId;
+        private Author author;
 
         public Builder() {}
 
@@ -56,15 +63,15 @@ public class Book {
             this.title = title;
             return this;
         }
-        public Builder authorId(Long authorId) {
-            this.authorId = authorId;
+        public Builder author(Author author) {
+            this.author = author;
             return this;
         }
         public Book build() {
             Book book = new Book();
             book.setIsbn(isbn);
             book.setTitle(title);
-            book.setAuthorId(authorId);
+            book.setAuthor(author);
             return book;
         }
     }
@@ -76,11 +83,11 @@ public class Book {
         Book book = (Book) o;
         return Objects.equals(isbn, book.isbn) &&
                 Objects.equals(title, book.title) &&
-                Objects.equals(authorId, book.authorId);
+                Objects.equals(author, book.author);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(isbn, title, authorId);
+        return Objects.hash(isbn, title, author);
     }
 }
